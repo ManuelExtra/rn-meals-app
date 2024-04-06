@@ -22,7 +22,6 @@ function CategoriesScreen({ navigation }) {
 
   return (
     <View>
-      <Text>Category Screen</Text>
       <FlatList
         data={CATEGORIES}
         keyExtractor={(item) => item.id}

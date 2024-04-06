@@ -1,24 +1,43 @@
+import { useEffect } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import MealItem from '../components/MealItem';
 
-import { MEALS } from '../data/dummy-data';
+import { MEALS, CATEGORIES } from '../data/dummy-data';
 
-function MealsOverviewScreen({ route }) {
+function MealsOverviewScreen({ route, navigation }) {
   const catId = route.params.categoryId;
 
   const displayedMeals = MEALS.filter((mealItem) => {
     return mealItem.categoryIds.indexOf(catId) >= 0;
   });
 
+  // You can use the useLayoutEffect hook for a more smoother transitioning
+  useEffect(() => {
+    const categoryTitle = CATEGORIES.find(
+      (category) => category.id === catId
+    ).title;
+
+    navigation.setOptions({
+      title: categoryTitle,
+    });
+  }, [catId, navigation]);
+
   function renderMealItem(item) {
     const mealItemProps = {
+      id: item.id,
       title: item.title,
       imageUrl: item.imageUrl,
       affordability: item.affordability,
       complexity: item.complexity,
       duration: item.duration,
     };
-    return <MealItem {...mealItemProps} />;
+
+    function pressHandler() {
+      navigation.navigate('MealDetails', {
+        mealId: item.id,
+      });
+    }
+    return <MealItem {...mealItemProps} onPress={pressHandler} />;
   }
 
   return (
